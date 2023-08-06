@@ -13,14 +13,7 @@
     </section>
 
     <section>
-      <div v-for="todo in todos" v-bind:key="todo.key" class="todo">
-        <p>{{ todo }}</p>
-        <div>
-          <button @click="removeTodo(todo)" class="remove-todo-btn">
-            &times;
-          </button>
-        </div>
-      </div>
+      <Todo :todos="todos" @submit="removeTodo"/>
     </section>
   </main>
 </template>
@@ -29,8 +22,9 @@
 import AddTodoForm from "./components/AddTodoForm.vue";
 import Alert from "./components/Alert.vue";
 import Navbar from "./components/Navbar.vue";
+import Todo from './components/Todo.vue';
 export default {
-  components: { Alert, Navbar, AddTodoForm },
+  components: { Alert, Navbar, AddTodoForm, Todo },
   data() {
     return {
       todoTitle: "",
@@ -56,24 +50,5 @@ export default {
 </script>
 
 <style scoped>
-.todo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--accent-color);
-  margin-top: 30px;
-  padding: 0 20px 0 20px;
-  border-radius: 10px;
-}
 
-.remove-todo-btn {
-  border-radius: 50%;
-  border: none;
-  height: 40px;
-  width: 40px;
-  font-size: 30px;
-  color: var(--text-color);
-  background: var(--danger-color);
-  cursor: pointer;
-}
 </style>
