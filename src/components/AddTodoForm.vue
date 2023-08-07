@@ -2,19 +2,27 @@
   <form class="add-todo-form">
     <input v-model="todoTitle" type="text" placeholder="Todo Title" />
     <div>
-      <button @click.prevent="$emit('submit', todoTitle); todoTitle=''">Add Todo</button>
+      <CustomButton
+        @click="
+          $emit('submit', todoTitle);
+          todoTitle = '';
+        "
+        >Add Todo</CustomButton
+      >
     </div>
   </form>
 </template>
 <script>
+import CustomButton from "./CustomButton.vue";
+
 export default {
+  components: { CustomButton },
   data() {
     return {
       todoTitle: "",
     };
   },
-
-  emits: ['submit']
+  emits: ["submit"],
 };
 </script>
 <style scoped>
@@ -29,9 +37,6 @@ export default {
 }
 
 .add-todo-form button {
-  background: var(--accent-color);
-  color: var(--text-color);
-  border: none;
   height: 50px;
 }
 </style>

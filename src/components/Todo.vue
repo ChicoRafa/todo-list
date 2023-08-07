@@ -2,23 +2,41 @@
   <div v-for="todo in todos" v-bind:key="todo.key" class="todo">
     <p>{{ todo }}</p>
     <div>
-      <button @click="$emit('submit', todo)" class="remove-todo-btn">
+      <CustomButton
+        circle
+        type="secondary"
+        @click="$emit('submit', todo)"
+        class="custom-todo-btn edit-todo-btn"
+      >
+        <Pencil/>
+        </CustomButton
+      >
+      <CustomButton
+        circle
+        type="danger"
+        @click="$emit('submit', todo)"
+        class="custom-todo-btn"
+      >
         &times;
-      </button>
+        </CustomButton
+      >
     </div>
   </div>
 </template>
 
 <script>
+import CustomButton from "./CustomButton.vue";
+import Pencil from "./icons/pencil.vue";
+
 export default {
-    props: {
+  components: { CustomButton, Pencil },
+  props: {
     todos: {
       required: true,
       type: Array,
     },
   },
-
-  emits: ['submit'],
+  emits: ["submit"],
 };
 </script>
 
@@ -33,14 +51,16 @@ export default {
   border-radius: 10px;
 }
 
-.remove-todo-btn {
-  border-radius: 50%;
-  border: none;
+.todo > div{
+    display: flex;
+}
+
+.custom-todo-btn {
   height: 40px;
   width: 40px;
   font-size: 30px;
-  color: var(--text-color);
-  background: var(--danger-color);
-  cursor: pointer;
+}
+.edit-todo-btn{
+    margin-right: 5px;
 }
 </style>
