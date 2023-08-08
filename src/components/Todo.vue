@@ -1,11 +1,11 @@
 <template>
-  <div v-for="todo in todos" v-bind:key="todo.key" class="todo">
-    <p>{{ todo }}</p>
+  <div class="todo">
+    <p>{{ title }}</p>
     <div>
       <CustomButton
         circle
         type="secondary"
-        @click="$emit('submit', todo)"
+        @click="$emit('edit')"
         class="custom-todo-btn edit-todo-btn"
       >
         <Pencil/>
@@ -14,7 +14,7 @@
       <CustomButton
         circle
         type="danger"
-        @click="$emit('submit', todo)"
+        @click="$emit('remove')"
         class="custom-todo-btn"
       >
         &times;
@@ -31,12 +31,12 @@ import Pencil from "./icons/pencil.vue";
 export default {
   components: { CustomButton, Pencil },
   props: {
-    todos: {
+    title: {
       required: true,
-      type: Array,
+      type: String,
     },
   },
-  emits: ["submit"],
+  emits: ["remove", "edit"],
 };
 </script>
 
