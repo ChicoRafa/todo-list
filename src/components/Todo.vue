@@ -4,7 +4,7 @@
     <div>
       <CustomButton
         circle
-        type="secondary"
+        variant="secondary"
         @click="$emit('edit')"
         class="custom-todo-btn edit-todo-btn"
       >
@@ -13,7 +13,7 @@
       >
       <CustomButton
         circle
-        type="danger"
+        variant="danger"
         @click="$emit('remove')"
         class="custom-todo-btn"
       >

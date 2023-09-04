@@ -2,44 +2,18 @@
   <Navbar />
 
   <main class="container">
-    <Modal :show="editTodoForm.show" @close="editTodoForm.show = false">
-      <template #header>
-        <h2>Edit Todo</h2>
-        <Alert
-          message="Todo cannot be empty"
-          :show="showAlert"
-          @close="showAlert = false"
-          type="danger"
-        />
-      </template>
+    <EditTodoForm
+      :show="editTodoForm.show"
+      @close="editTodoForm.show = false"
+      @submit="updateTodo"
+      v-model="editTodoForm.todo.title"
+    />
 
-      <template #content>
-        <form class="edit-todo-form">
-          <div><label>Todo Title</label></div>
-          <input
-            @keydown.enter.prevent="updateTodo"
-            type="text"
-            v-model="editTodoForm.todo.title"
-          />
-        </form>
-      </template>
-
-      <template #footer>
-        <div class="edit-todo-modal-footer">
-          <CustomButton class="edit-todo-submit-btn" @click="updateTodo"
-            >Submit</CustomButton
-          >
-          <CustomButton type="danger" @click="editTodoForm.show = false"
-            >Close</CustomButton
-          >
-        </div>
-      </template>
-    </Modal>
     <Alert
       :message="alert.message"
       :show="alert.show"
       @close="alert.show = false"
-      :type="alert.type"
+      :variant="alert.variant"
     />
     <section>
       <AddTodoForm :isLoading="isPostingTodo" @submit="addTodo" />
@@ -69,6 +43,7 @@ import Navbar from "./components/Navbar.vue";
 import Todo from "./components/Todo.vue";
 import axios from "axios";
 import Spinner from "./components/Spinner.vue";
+import EditTodoForm from "./components/EditTodoForm.vue";
 export default {
   components: {
     Alert,
@@ -78,6 +53,7 @@ export default {
     Modal,
     CustomButton,
     Spinner,
+    EditTodoForm,
   },
   data() {
     return {
@@ -86,7 +62,7 @@ export default {
       alert: {
         show: false,
         message: "",
-        type: "danger",
+        variant: "danger",
       },
       isLoading: false,
       isPostingTodo: false,
@@ -116,10 +92,10 @@ export default {
       this.isLoading = false;
     },
 
-    showAlert(message, type = "danger") {
+    showAlert(message, variant = "danger") {
       this.alert.show = true;
       this.alert.message = message;
-      this.alert.type = type;
+      this.alert.variant = variant;
     },
 
     async addTodo(title) {
@@ -167,18 +143,5 @@ export default {
 .spinner {
   margin: auto;
   margin-top: 10px;
-}
-.edit-todo-form > input {
-  width: 100%;
-  height: 30px;
-  border: 1px solid var(--accent-color);
-}
-.edit-todo-modal-footer {
-  display: flex;
-  justify-content: end;
-  padding: 10px;
-}
-.edit-todo-submit-btn {
-  margin-right: 5px;
 }
 </style>

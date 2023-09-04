@@ -9,16 +9,11 @@
 </template>
 
 <script>
-export default {
-  props: {
-    type: {
-      default: "success",
-      validator(value) {
-        const options = ["warning", "danger", "info", "success, secondary"];
-        return options.includes(value);
-      },
-    },
+import { backgroundColor } from '../mixins/backgroundColor';
 
+export default {
+  mixins: [backgroundColor],
+  props: {
     circle: {
       default: false,
       type: Boolean,
@@ -26,17 +21,6 @@ export default {
   },
 
   computed: {
-    backgroundColor() {
-      const options = {
-        danger: "var(--danger-color)",
-        warning: "var(--warning-color)",
-        info: "var(--info-color)",
-        success: "var(--accent-color)",
-        secondary: "var(--secondary-color)",
-      };
-      return options[this.type];
-    },
-
     applyCircleClass() {
       return this.circle;
     },
