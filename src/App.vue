@@ -108,7 +108,7 @@ export default {
     async fetchTodos() {
       this.isLoading = true;
       try {
-        const res = await axios.get("http://localhost:8080/todos");
+        const res = await axios.get("/api/todos");
         this.todos = await res.data;
       } catch (e) {
         this.showAlert("Failed loading todos");
@@ -128,7 +128,7 @@ export default {
         return;
       }
       this.isPostingTodo = true;
-      const res = await axios.post("http://localhost:8080/todos", { title });
+      const res = await axios.post("/api/todos", { title });
       this.isPostingTodo = false;
       this.todos.push(res.data);
     },
@@ -138,21 +138,25 @@ export default {
       this.editTodoForm.todo = { ...todo };
     },
 
-    updateTodo() {
-      const todo = this.todos.find(
-        (todo) => todo.id === this.editTodoForm.todo.id
-      );
-      if (this.editTodoForm.todo.title === "") {
-        this.showAlert = true;
-        return;
-      } else {
+    async updateTodo() {
+      try {
+        const { id, title } = this.editTodoForm.todo;
+        await axios.put(`/api/todos/${id}`, { title });
+
+        const todo = this.todos.find(
+          (todo) => todo.id === this.editTodoForm.todo.id
+        );
+
         todo.title = this.editTodoForm.todo.title;
-        this.editTodoForm.show = false;
+      } catch (e) {
+        this.showAlert("Failed updating todo");
       }
+      
+      this.editTodoForm.show = false;
     },
 
     async removeTodo(id) {
-      await axios.delete(`http://localhost:8080/todos/${id}`);
+      await axios.delete(`/api/todos/${id}`);
       this.todos = this.todos.filter((todo) => todo.id !== id);
     },
   },
