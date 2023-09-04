@@ -42,17 +42,20 @@
       :type="alert.type"
     />
     <section>
-      <AddTodoForm @submit="addTodo" />
+      <AddTodoForm :isLoading="isPostingTodo" @submit="addTodo" />
     </section>
 
     <section>
-      <Todo
-        v-for="todo in todos"
-        :key="todo.id"
-        :title="todo.title"
-        @remove="removeTodo(todo.id)"
-        @edit="showEditTodoForm(todo)"
-      />
+      <Spinner v-if="isLoading" class="spinner" />
+      <div v-else>
+        <Todo
+          v-for="todo in todos"
+          :key="todo.id"
+          :title="todo.title"
+          @remove="removeTodo(todo.id)"
+          @edit="showEditTodoForm(todo)"
+        />
+      </div>
     </section>
   </main>
 </template>
@@ -65,8 +68,17 @@ import Modal from "./components/Modal.vue";
 import Navbar from "./components/Navbar.vue";
 import Todo from "./components/Todo.vue";
 import axios from "axios";
+import Spinner from "./components/Spinner.vue";
 export default {
-  components: { Alert, Navbar, AddTodoForm, Todo, Modal, CustomButton },
+  components: {
+    Alert,
+    Navbar,
+    AddTodoForm,
+    Todo,
+    Modal,
+    CustomButton,
+    Spinner,
+  },
   data() {
     return {
       todoTitle: "",
@@ -76,6 +88,8 @@ export default {
         message: "",
         type: "danger",
       },
+      isLoading: false,
+      isPostingTodo: false,
       editTodoForm: {
         show: false,
         todo: {
@@ -92,15 +106,17 @@ export default {
 
   methods: {
     async fetchTodos() {
+      this.isLoading = true;
       try {
         const res = await axios.get("http://localhost:8080/todos");
         this.todos = await res.data;
       } catch (e) {
-        this.showAlert("Failed loading todos, check your internet connection");
+        this.showAlert("Failed loading todos");
       }
+      this.isLoading = false;
     },
 
-    showAlert(message, type = "danger"){
+    showAlert(message, type = "danger") {
       this.alert.show = true;
       this.alert.message = message;
       this.alert.type = type;
@@ -108,10 +124,12 @@ export default {
 
     async addTodo(title) {
       if (title === "") {
-        this.showAlert("Todo title is required", "info")
+        this.showAlert("Todo title is required", "info");
         return;
       }
+      this.isPostingTodo = true;
       const res = await axios.post("http://localhost:8080/todos", { title });
+      this.isPostingTodo = false;
       this.todos.push(res.data);
     },
 
@@ -142,6 +160,10 @@ export default {
 </script>
 
 <style scoped>
+.spinner {
+  margin: auto;
+  margin-top: 10px;
+}
 .edit-todo-form > input {
   width: 100%;
   height: 30px;

@@ -56,6 +56,10 @@ button {
   align-items: center;
 }
 
+button:disabled {
+  opacity: 80%;
+}
+
 .circle {
   border-radius: 50%;
 }
