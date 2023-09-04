@@ -34,7 +34,7 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import AddTodoForm from "./components/AddTodoForm.vue";
 import Alert from "./components/Alert.vue";
 import CustomButton from "./components/CustomButton.vue";
@@ -44,99 +44,77 @@ import Todo from "./components/Todo.vue";
 import axios from "axios";
 import Spinner from "./components/Spinner.vue";
 import EditTodoForm from "./components/EditTodoForm.vue";
-export default {
-  components: {
-    Alert,
-    Navbar,
-    AddTodoForm,
-    Todo,
-    Modal,
-    CustomButton,
-    Spinner,
-    EditTodoForm,
+import { reactive, ref } from "vue";
+
+const todos = ref([]);
+const alert = reactive({
+  show: false,
+  message: "",
+  variant: "danger",
+});
+const isLoading = ref(false);
+const isPostingTodo = ref(false);
+const editTodoForm = reactive({
+  show: false,
+  todo: {
+    id: 0,
+    title: "",
   },
-  data() {
-    return {
-      todoTitle: "",
-      todos: [],
-      alert: {
-        show: false,
-        message: "",
-        variant: "danger",
-      },
-      isLoading: false,
-      isPostingTodo: false,
-      editTodoForm: {
-        show: false,
-        todo: {
-          id: 0,
-          title: "",
-        },
-      },
-    };
-  },
+});
+fetchTodos();
 
-  created() {
-    this.fetchTodos();
-  },
+function showEditTodoForm(todo) {
+  editTodoForm.show = true;
+  editTodoForm.todo = { ...todo };
+}
 
-  methods: {
-    async fetchTodos() {
-      this.isLoading = true;
-      try {
-        const res = await axios.get("/api/todos");
-        this.todos = await res.data;
-      } catch (e) {
-        this.showAlert("Failed loading todos");
-      }
-      this.isLoading = false;
-    },
+function showAlert(message, variant = "danger") {
+  alert.show = true;
+  alert.message = message;
+  alert.variant = variant;
+}
 
-    showAlert(message, variant = "danger") {
-      this.alert.show = true;
-      this.alert.message = message;
-      this.alert.variant = variant;
-    },
+async function fetchTodos() {
+  isLoading.value = true;
+  try {
+    const res = await axios.get("/api/todos");
+    todos.value = res.data;
+  } catch (e) {
+    showAlert("Failed loading todos");
+  }
+  isLoading.value = false;
+}
 
-    async addTodo(title) {
-      if (title === "") {
-        this.showAlert("Todo title is required", "info");
-        return;
-      }
-      this.isPostingTodo = true;
-      const res = await axios.post("/api/todos", { title });
-      this.isPostingTodo = false;
-      this.todos.push(res.data);
-    },
+async function addTodo(title) {
+  if (title === "") {
+    showAlert("Todo title is required", "info");
+    return;
+  }
+  isPostingTodo.value = true;
+  const res = await axios.post("/api/todos", { title });
+  isPostingTodo.value = false;
+  todos.value.push(res.data);
+}
 
-    showEditTodoForm(todo) {
-      this.editTodoForm.show = true;
-      this.editTodoForm.todo = { ...todo };
-    },
+async function updateTodo() {
+  try {
+    const { id, title } = editTodoForm.todo;
+    await axios.put(`/api/todos/${id}`, { title });
 
-    async updateTodo() {
-      try {
-        const { id, title } = this.editTodoForm.todo;
-        await axios.put(`/api/todos/${id}`, { title });
+    const todo = todos.value.find((todo) => todo.id === editTodoForm.todo.id);
 
-        const todo = this.todos.find(
-          (todo) => todo.id === this.editTodoForm.todo.id
-        );
+    todo.title = editTodoForm.todo.title;
+  } catch (e) {
+    showAlert("Failed updating todo");
+  }
 
-        todo.title = this.editTodoForm.todo.title;
-      } catch (e) {
-        this.showAlert("Failed updating todo");
-      }
-      
-      this.editTodoForm.show = false;
-    },
+  editTodoForm.show = false;
+}
 
-    async removeTodo(id) {
-      await axios.delete(`/api/todos/${id}`);
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-    },
-  },
-};
+async function removeTodo(id) {
+  await axios.delete(`/api/todos/${id}`);
+  todos.value = todos.value.filter((todo) => todo.id !== id);
+}
 </script>
 
 <style scoped>
