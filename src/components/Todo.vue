@@ -8,9 +8,8 @@
         @click="$emit('edit')"
         class="custom-todo-btn edit-todo-btn"
       >
-        <Pencil/>
-        </CustomButton
-      >
+        <Pencil />
+      </CustomButton>
       <CustomButton
         circle
         variant="danger"
@@ -18,26 +17,22 @@
         class="custom-todo-btn"
       >
         &times;
-        </CustomButton
-      >
+      </CustomButton>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import CustomButton from "./CustomButton.vue";
 import Pencil from "./icons/pencil.vue";
 
-export default {
-  components: { CustomButton, Pencil },
-  props: {
-    title: {
-      required: true,
-      type: String,
-    },
+defineProps({
+  title: {
+    required: true,
+    type: String,
   },
-  emits: ["remove", "edit"],
-};
+});
+defineEmits(["remove", "edit"]);
 </script>
 
 <style scoped>
@@ -51,8 +46,8 @@ export default {
   border-radius: 10px;
 }
 
-.todo > div{
-    display: flex;
+.todo > div {
+  display: flex;
 }
 
 .custom-todo-btn {
@@ -60,7 +55,7 @@ export default {
   width: 40px;
   font-size: 30px;
 }
-.edit-todo-btn{
-    margin-right: 5px;
+.edit-todo-btn {
+  margin-right: 5px;
 }
 </style>
