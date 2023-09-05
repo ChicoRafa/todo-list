@@ -17,7 +17,7 @@
             :key="todo.id"
             :title="todo.title"
             @remove="removeTodo(todo.id)"
-            @edit="showEditTodoForm(todo)"
+            @edit="$router.push(`/todos/${todo.id}/edit`)"
           />
         </div>
       </section>
@@ -29,7 +29,6 @@
   import Todo from "@/components/Todo.vue";
   import axios from "axios";
   import Spinner from "@/components/Spinner.vue";
-  import EditTodoForm from "@/components/EditTodoForm.vue";
   import { reactive, ref } from "vue";
   import { useFetch } from "@/composables/fetch";
   
