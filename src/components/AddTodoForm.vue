@@ -7,32 +7,27 @@
         @click="
           $emit('submit', todoTitle);
           todoTitle = '';
-        ">
+        "
+      >
         <Spinner v-if="isLoading" />
         <span v-else>Add Todo</span>
-        </CustomButton>
+      </CustomButton>
     </div>
   </form>
 </template>
-<script>
+<script setup>
+import { ref } from "vue";
 import CustomButton from "./CustomButton.vue";
 import Spinner from "./Spinner.vue";
 
-export default {
-  components: { CustomButton, Spinner },
-  props: {
-    isLoading: {
-      default: false,
-      type: Boolean,
-    },
+defineProps({
+  isLoading: {
+    default: false,
+    type: Boolean,
   },
-  data() {
-    return {
-      todoTitle: "",
-    };
-  },
-  emits: ["submit"],
-};
+});
+defineEmits(["submit"]);
+const todoTitle = ref("");
 </script>
 <style scoped>
 .add-todo-form {
