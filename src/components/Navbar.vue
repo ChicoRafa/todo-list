@@ -8,6 +8,7 @@
     <div class="links">
       <ul>
         <li><RouterLink to="/">Home</RouterLink></li>
+        <li><RouterLink to="/create">Add Todo</RouterLink></li>
         <li><RouterLink to="/about">About</RouterLink></li>
       </ul>
     </div>
@@ -41,7 +42,7 @@
 
 .links a {
   font-size: 30px;
-  margin-left: 10px;
+  margin-left: 15px;
   text-decoration: none;
   color: var(--text-color);
 }
@@ -64,7 +65,7 @@ a.router-link-active{
     padding: 0;
   }
 
-  .link a {
+  .links a {
     font-size: 20px;
   }
 }

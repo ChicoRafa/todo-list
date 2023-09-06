@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup>
-import { backgroundColorProps, useBackgroundColor } from "../composables/backgroundColor";
+import { backgroundColorProps, useBackgroundColor } from "@/composables/backgroundColor";
 const props = defineProps({
   ...backgroundColorProps,
   message: {

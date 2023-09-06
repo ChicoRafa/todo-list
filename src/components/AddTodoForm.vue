@@ -1,3 +1,4 @@
+<!-- DEPRECATED -->
 <template>
   <form class="add-todo-form">
     <input v-model="todoTitle" type="text" placeholder="Todo Title" />

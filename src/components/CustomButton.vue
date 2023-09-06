@@ -1,16 +1,16 @@
 <template>
   <button
     :style="{ backgroundColor }"
-    @click.prevent="$emit('click')"
     :class="{ circle: applyCircleClass }"
+    v-bind="$attrs"
   >
-    <slot />
+    <slot/>
   </button>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import { useBackgroundColor, backgroundColorProps } from "../composables/backgroundColor";
+import { useBackgroundColor, backgroundColorProps } from "@/composables/backgroundColor";
 const props = defineProps({
   circle: {
     default: false,

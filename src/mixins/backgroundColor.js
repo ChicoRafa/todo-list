@@ -1,3 +1,4 @@
+// DEPRECATED
 const backgroundColor = {
     props: {
       variant: {

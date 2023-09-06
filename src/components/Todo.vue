@@ -1,6 +1,8 @@
 <template>
   <div class="todo">
-    <p>{{ title }}</p>
+    <p>{{ todo.title }}</p>
+    <p>{{ todo.description }}</p>
+    <p>{{ todo.date }}</p>
     <div>
       <CustomButton
         circle
@@ -27,9 +29,9 @@ import CustomButton from "./CustomButton.vue";
 import Pencil from "./icons/pencil.vue";
 
 defineProps({
-  title: {
+  todo: {
     required: true,
-    type: String,
+    type: Object,
   },
 });
 defineEmits(["remove", "edit"]);
@@ -57,5 +59,13 @@ defineEmits(["remove", "edit"]);
 }
 .edit-todo-btn {
   margin-right: 5px;
+}
+
+@media (max-width: 680px) {
+  .todo {
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+  }
 }
 </style>

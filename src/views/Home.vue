@@ -1,101 +1,59 @@
 <template>
-      <Alert
-        :message="alert.message"
-        :show="alert.show"
-        @close="alert.show = false"
-        :variant="alert.variant"
+  <Alert v-bind="alert" @close="alert.show = false" />
+
+  <section>
+    <Spinner v-if="isLoading" class="spinner" />
+    <div v-else>
+      <Todo
+        v-for="todo in todos"
+        :key="todo.id"
+        :todo="todo"
+        @remove="removeTodo(todo.id)"
+        @edit="$router.push(`/todos/${todo.id}/edit`)"
       />
-      <section>
-        <AddTodoForm :isLoading="isPostingTodo" @submit="addTodo" />
-      </section>
-  
-      <section>
-        <Spinner v-if="isLoading" class="spinner" />
-        <div v-else>
-          <Todo
-            v-for="todo in todos"
-            :key="todo.id"
-            :title="todo.title"
-            @remove="removeTodo(todo.id)"
-            @edit="$router.push(`/todos/${todo.id}/edit`)"
-          />
-        </div>
-      </section>
-  </template>
-  
-  <script setup>
-  import AddTodoForm from "@/components/AddTodoForm.vue";
-  import Alert from "@/components/Alert.vue";
-  import Todo from "@/components/Todo.vue";
-  import axios from "axios";
-  import Spinner from "@/components/Spinner.vue";
-  import { reactive, ref } from "vue";
-  import { useFetch } from "@/composables/fetch";
-  
-  const alert = reactive({
-    show: false,
-    message: "",
-    variant: "danger",
+    </div>
+  </section>
+</template>
+
+<script setup>
+import Alert from "@/components/Alert.vue";
+import Todo from "@/components/Todo.vue";
+import axios from "axios";
+import Spinner from "@/components/Spinner.vue";
+import { ref } from "vue";
+import { useFetch } from "@/composables/fetch";
+import {useAlert} from "@/composables/alert.js";
+
+const {alert, showAlert} = useAlert();
+const isPostingTodo = ref(false);
+const { data: todos, isLoading } = useFetch("/api/todos", {
+  onError: () => showAlert("Failed loading todos"),
+});
+
+async function addTodo(title) {
+  if (title === "") {
+    showAlert("Todo title is required");
+    return;
+  }
+
+  isPostingTodo.value = true;
+  const res = await axios.post("/api/todos", {
+    title,
   });
-  const isPostingTodo = ref(false);
-  const editTodoForm = reactive({
-    show: false,
-    todo: {
-      id: 0,
-      title: "",
-    },
-  });
-  const { data: todos, isLoading } = useFetch("/api/todos", {
-    onError: () => showAlert("Failed loading todos")
-  });
-  
-  function showEditTodoForm(todo) {
-    editTodoForm.show = true;
-    editTodoForm.todo = { ...todo };
-  }
-  
-  function showAlert(message, variant = "danger") {
-    alert.show = true;
-    alert.message = message;
-    alert.variant = variant;
-  }
-  
-  async function addTodo(title) {
-    if (title === "") {
-      showAlert("Todo title is required", "info");
-      return;
-    }
-    isPostingTodo.value = true;
-    const res = await axios.post("/api/todos", { title });
-    isPostingTodo.value = false;
-    todos.value.push(res.data);
-  }
-  
-  async function updateTodo() {
-    try {
-      const { id, title } = editTodoForm.todo;
-      await axios.put(`/api/todos/${id}`, { title });
-  
-      const todo = todos.value.find((todo) => todo.id === editTodoForm.todo.id);
-  
-      todo.title = editTodoForm.todo.title;
-    } catch (e) {
-      showAlert("Failed updating todo");
-    }
-  
-    editTodoForm.show = false;
-  }
-  
-  async function removeTodo(id) {
-    await axios.delete(`/api/todos/${id}`);
-    todos.value = todos.value.filter((todo) => todo.id !== id);
-  }
-  </script>
-  
-  <style scoped>
-  .spinner {
-    margin: auto;
-    margin-top: 10px;
-  }
-  </style>
-  
+
+  isPostingTodo.value = false;
+  todos.value.push(res.data);
+}
+
+async function removeTodo(id) {
+  await axios.delete(`/api/todos/${id}`);
+  todos.value = todos.value.filter((todo) => todo.id !== id);
+}
+</script>
+
+<style scoped>
+.spinner {
+  margin: auto;
+  margin-top: 10px;
+}
+</style>
